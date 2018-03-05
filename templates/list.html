@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>~ all Combinations are beautiful ~</h1>
+    <a href="{{ url_for('index') }}">
+        <i class="material-icons">arrow_back</i> back
+    </a>
+    <div class="center">
+        <ul>
+        {% for acab in lst %}
+            <li>all {{ acab.c.capitalize() }} are {{ acab.b.capitalize() }} [{{ acab.votes }}]</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
