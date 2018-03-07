@@ -24,7 +24,7 @@ class Acab(db.Model):
 @app.route('/')
 @limiter.exempt
 def index():
-    if (random.randint(1,10) > 9):
+    if (random.randint(1,10) > 9) and (len(Acab.query.all()) > 0):
         if (random.randint(0,1) == 1):
             acab = Acab.query.order_by(func.random()).first()
             gen = { 'c' : acab.c, 'b' : acab.b,
