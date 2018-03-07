@@ -31,7 +31,6 @@ def vote_limiter(request):
         return (get_remote_address() + b + c + str(down))
 
     
-
 @app.route('/')
 @limiter.exempt
 def index():
@@ -53,6 +52,7 @@ def index():
         gen = { 'c' : random.choice(cs), 'b' : random.choice(bs),
                 'source' : 'a random C and B chosen from the wordlist'}
     return render_template('index.html', gen = gen)
+
 
 @app.route('/vote')
 # Allow 1 request per day per ip per acab
@@ -78,7 +78,7 @@ def vote():
         else:
             acab.vote += 1 * multiplier
             db.session.commit()
-        return redirect(url_for('list'))
+        return redirect(url_for('index'))
     else:
         return render_template('error.html', desc = "You can't vote for that"), 201
 
