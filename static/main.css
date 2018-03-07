@@ -4,6 +4,12 @@ h1 {
     font-size : 54px;
     text-align: center;
 }
+h1.error {
+    color: red;
+}
+h1.highlight {
+    color: hotpink;
+}
 h3 {
     text-align: center;
 }
@@ -21,7 +27,7 @@ a {
 }
 
 a:hover {
-    color: red;
+    background-color: hotpink;
 }
 
 .center {

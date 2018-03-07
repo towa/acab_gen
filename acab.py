@@ -75,4 +75,4 @@ def list():
 
 @app.errorhandler(429)
 def ratelimit_handler(e):
-    return render_template('error.html', desc = "Please wait a while before you vote again"), 429
+    return render_template('error.html', desc = "Please wait a while before you vote for the same thing again"), 429
