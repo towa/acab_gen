@@ -7,7 +7,19 @@
     <div class="center">
         <ul>
         {% for acab in lst %}
-            <li>all {{ acab.c.capitalize() }} are {{ acab.b.capitalize() }} [{{ acab.votes }}]</li>
+            <li>
+                <div class="acabitem">
+                    all {{ acab.c.capitalize() }} are {{ acab.b.capitalize() }}
+                    <div class="votebuttons">
+                        <a class="small" href="{{ url_for('vote', c = acab.c, b = acab.b) }}">
+                            <i class="material-icons small">favorite</i> witzig ({{ acab.votes }})
+                        </a>
+                        <a class="small" href="{{ url_for('vote', c = acab.c, b = acab.b, downvote = True) }}">
+                            <i class="material-icons small">thumb_down</i> nicht witzig
+                        </a>
+                    <div>
+                </div>
+            </li>
         {% endfor %}
         </ul>
     </div>

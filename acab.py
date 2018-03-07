@@ -21,6 +21,14 @@ class Acab(db.Model):
         return '<all %r are %r>' % (self.c, self.b)
 
 
+def vote_limiter(request):
+    if (('b' in request.args) and ('c' in request.args)):
+        c = request.args.get('c')
+        b = request.args.get('b')
+        return (get_remote_address() + b + c)
+
+    
+
 @app.route('/')
 @limiter.exempt
 def index():
@@ -45,12 +53,19 @@ def index():
 
 @app.route('/vote')
 # Allow 1 request per day per ip per acab
-@limiter.limit("1 per day", key_func = lambda : get_remote_address()
-    + request.args.get('b') + request.args.get('c'))
+@limiter.limit("1 per day", key_func = lambda : vote_limiter(request) )
 def vote():
-    b = request.args.get('b')
-    c = request.args.get('c')
-    print request.environ['REMOTE_ADDR']
+    if (('b' in request.args) and ('c' in request.args)):
+        c = request.args.get('c')
+        b = request.args.get('b')
+    else:
+        return render_template('error.html', desc = "Trying to vote for nothing. What are you? An anarchist?!")
+    if ('downvote' in request.args):
+        multiplier = -1
+    else:
+        multiplier = 1
+    print b
+      
     if b.startswith('b') and c.startswith('c'):
         acab = Acab.query.filter_by(b=b, c=c).first()
         if acab is None:
@@ -58,7 +73,7 @@ def vote():
             db.session.add(acab)
             db.session.commit()
         else:
-            acab.vote += 1
+            acab.vote += 1 * multiplier
             db.session.commit()
         return redirect(url_for('list'))
     else:

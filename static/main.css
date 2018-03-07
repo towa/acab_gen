@@ -13,8 +13,14 @@ h1.highlight {
 h3 {
     text-align: center;
 }
+
+ul {
+    list-style-type: none;
+}
 li {
-    font-size: 24px;
+    font-size: 32px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 a {
     background-color: white;
@@ -26,6 +32,14 @@ a {
     text-decoration: none;
 }
 
+a.small {
+    font-size: 20px;
+}
+
+i.small {
+    font-size: 20px;
+}
+
 a:hover {
     background-color: hotpink;
 }
@@ -34,7 +48,19 @@ a:hover {
     margin: auto;
     width: 50%;
     padding: 10px;
+    position: relative;
 }
+
+.acabitem {
+    position: relative;
+}
+
+.votebuttons {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
 body {
     color: white;
     font-family : 'Roboto';
