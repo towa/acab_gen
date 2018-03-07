@@ -51,6 +51,12 @@ def index():
             bs = f.readlines()
         gen = { 'c' : random.choice(cs), 'b' : random.choice(bs),
                 'source' : 'a random C and B chosen from the wordlist'}
+
+    if (('oldc' in request.args) and ('oldb' in request.args)):
+        old_c = request.args.get('oldc')
+        old_b = request.args.get('oldb')
+        gen.update({'old_c' : old_c, 'old_b' : old_b})
+
     return render_template('index.html', gen = gen)
 
 
@@ -67,7 +73,6 @@ def vote():
         multiplier = -1
     else:
         multiplier = 1
-    print b
       
     if b.startswith('b') and c.startswith('c'):
         acab = Acab.query.filter_by(b=b, c=c).first()
@@ -78,7 +83,7 @@ def vote():
         else:
             acab.vote += 1 * multiplier
             db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('index', oldc = c, oldb = b))
     else:
         return render_template('error.html', desc = "You can't vote for that"), 201
 

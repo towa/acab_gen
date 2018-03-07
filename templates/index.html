@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
-{% block body %}
+{% block head %}
+    {% if gen.old_c and gen.old_b %}
+        <div class="messagebox center">
+            You voted for <b>"all {{ gen.old_c.capitalize() }} are {{ gen.old_b.capitalize() }}"</b>.
+        </div>
+    {% endif %}
     <h1>~ all {{ gen.c.capitalize() }} are {{ gen.b.capitalize() }} ~</h1>
     {% if gen.source %}
         <h3> {{ gen.source }} </h3>
@@ -16,4 +21,8 @@
     <a href="https://github.com/towa/acab_gen" target="blank">
         <i class="material-icons">code</i> code
     </a>
+{% endblock %}
+{% block js %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='fade.js') }}"></script>
 {% endblock %}
