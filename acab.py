@@ -4,10 +4,12 @@ from flask_limiter.util import get_remote_address
 import random
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///acab.db'
 db = SQLAlchemy(app)
+CORS(app)
 limiter = Limiter(app)
 
 
@@ -60,16 +62,17 @@ def index():
     return jsonify(gen = gen)
 
 
-@app.route('/vote')
+@app.route('/vote', methods = ['POST'])
 # Allow 1 request per day per ip per acab
 @limiter.limit("1 per day", key_func = lambda : vote_limiter(request) )
 def vote():
-    if (('b' in request.args) and ('c' in request.args)):
-        c = request.args.get('c')
-        b = request.args.get('b')
+    content = request.get_json(silent=True)
+    if ((u'b' in content) and (u'c' in content)):
+        c = content.get(u'c')
+        b = content.get(u'b')
     else:
         return jsonify(error = "Trying to vote for nothing. What are you? An anarchist?!")
-    if ('downvote' in request.args):
+    if (('downvote' in content) and (not (content.get(u'downvote')))):
         multiplier = -1
     else:
         multiplier = 1
