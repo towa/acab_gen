@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, jsonify, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import random
@@ -30,8 +30,8 @@ def vote_limiter(request):
         b = request.args.get('b')
         return (get_remote_address() + b + c + str(down))
 
-    
-@app.route('/')
+
+@app.route('/random')
 @limiter.exempt
 def index():
     if (random.randint(1,10) > 9) and (len(Acab.query.all()) > 0):
@@ -49,7 +49,7 @@ def index():
             cs = f.readlines()
         with open('words/b.words', 'r') as f:
             bs = f.readlines()
-        gen = { 'c' : random.choice(cs), 'b' : random.choice(bs),
+        gen = { 'c' : random.choice(cs).rstrip(), 'b' : random.choice(bs).rstrip(),
                 'source' : 'a random C and B chosen from the wordlist'}
 
     if (('oldc' in request.args) and ('oldb' in request.args)):
@@ -57,7 +57,7 @@ def index():
         old_b = request.args.get('oldb')
         gen.update({'old_c' : old_c, 'old_b' : old_b})
 
-    return render_template('index.html', gen = gen)
+    return jsonify(gen = gen)
 
 
 @app.route('/vote')
@@ -68,7 +68,7 @@ def vote():
         c = request.args.get('c')
         b = request.args.get('b')
     else:
-        return render_template('error.html', desc = "Trying to vote for nothing. What are you? An anarchist?!")
+        return jsonify(error = "Trying to vote for nothing. What are you? An anarchist?!")
     if ('downvote' in request.args):
         multiplier = -1
     else:
@@ -77,15 +77,16 @@ def vote():
     if b.startswith('b') and c.startswith('c'):
         acab = Acab.query.filter_by(b=b, c=c).first()
         if acab is None:
-            acab = Acab(b=b, c=c, vote=1)
+            acab = Acab(b=b, c=c, vote=multiplier)
             db.session.add(acab)
             db.session.commit()
         else:
             acab.vote += 1 * multiplier
             db.session.commit()
-        return redirect(url_for('index', oldc = c, oldb = b))
+        return jsonify(vote = { 'c' : c, 'b' : b })
     else:
-        return render_template('error.html', desc = "You can't vote for that"), 201
+        return jsonify(error = "You can't vote for that!")
+
 
 @app.route('/list')
 @limiter.exempt
@@ -94,8 +95,9 @@ def list():
         { 'c' : a.c, 'b' : a.b, 'votes' : a.vote }
         for a in Acab.query.order_by(Acab.vote).all()]
     acabs.reverse()
-    return render_template('list.html', lst = acabs)
+    return jsonify(lst = acabs)
+
 
 @app.errorhandler(429)
 def ratelimit_handler(e):
-    return render_template('error.html', desc = "Please wait a while before you vote for the same thing again"), 429
+    return jsonify(error = "Please wait a while before you vote for the same thing again")
