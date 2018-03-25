@@ -24,12 +24,13 @@ class Acab(db.Model):
 
 
 def vote_limiter(request):
-    if (('b' in request.args) and ('c' in request.args)):
+    content = request.get_json(silent=True)
+    if ((u'b' in content) and (u'c' in content)):
         down = False
-        if ('downvote' in request.args):
-            down = request.args.get('downvote')
-        c = request.args.get('c')
-        b = request.args.get('b')
+        if (u'downvote' in content):
+            down = content.get('downvote')
+        c = content.get('c')
+        b = content.get('b')
         return (get_remote_address() + b + c + str(down))
 
 
