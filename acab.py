@@ -72,7 +72,7 @@ def vote():
         b = content.get(u'b')
     else:
         return jsonify(error = "Trying to vote for nothing. What are you? An anarchist?!")
-    if (('downvote' in content) and (not (content.get(u'downvote')))):
+    if (('downvote' in content) and (content.get(u'downvote'))):
         multiplier = -1
     else:
         multiplier = 1
