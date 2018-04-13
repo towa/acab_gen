@@ -16,7 +16,7 @@ limiter = Limiter(app)
 from app.api import ListPoemAPI, RandomPoemAPI, VotePoemAPI
 
 api = Api(app)
-api.add_resource(ListPoemAPI, '/list/<int:page>', endpoint = 'list.page')
-api.add_resource(ListPoemAPI, '/list', endpoint = 'list')
-api.add_resource(RandomPoemAPI, '/random', endpoint = 'random')
-api.add_resource(VotePoemAPI, '/vote', endpoint = 'vote')
+api.add_resource(ListPoemAPI, '/api/list/<int:page>', endpoint = 'list.page')
+api.add_resource(ListPoemAPI, '/api/list', endpoint = 'list')
+api.add_resource(RandomPoemAPI, '/api/random', endpoint = 'random')
+api.add_resource(VotePoemAPI, '/api/vote', endpoint = 'vote')
